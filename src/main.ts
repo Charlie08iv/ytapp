@@ -116,7 +116,7 @@ function showTitleVariations(variations: string[]): void {
 }
 
 async function fetchVideoInfo(videoId: string): Promise<VideoInfo> {
-  const response = await fetch(`${API_BASE}/api/video-info/${videoId}`);
+  const response = await fetch(`${API_BASE}/api/video-info?videoId=${videoId}`);
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.error || 'Failed to fetch video info');
