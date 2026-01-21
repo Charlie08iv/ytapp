@@ -1,11 +1,15 @@
-import Anthropic from '@anthropic-ai/sdk';
-
-const anthropic = new Anthropic();
+import Groq from 'groq-sdk';
 
 export async function generateTitleVariations(title: string): Promise<string[]> {
-  const message = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1024,
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    throw new Error('Groq API key not configured');
+  }
+
+  const groq = new Groq({ apiKey });
+
+  const response = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
     messages: [
       {
         role: 'user',
@@ -20,14 +24,12 @@ Generate 5 alternative title variations that are engaging, clickable, and would 
 Return ONLY the 5 titles, one per line, numbered 1-5. No explanations or additional text.`,
       },
     ],
+    max_tokens: 500,
   });
 
-  const content = message.content[0];
-  if (content.type !== 'text') {
-    throw new Error('Unexpected response format');
-  }
+  const text = response.choices[0]?.message?.content || '';
 
-  const lines = content.text
+  const lines = text
     .split('\n')
     .map(line => line.replace(/^\d+\.\s*/, '').trim())
     .filter(line => line.length > 0);

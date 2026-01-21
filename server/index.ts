@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { getVideoInfo } from './youtube.js';
-import { generateTitleVariations } from './claude.js';
+import { generateTitleVariations } from './groq.js';
 
 dotenv.config();
 
@@ -37,8 +37,8 @@ app.post('/api/generate-titles', async (req, res) => {
       return res.status(400).json({ error: 'Title is required' });
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return res.status(500).json({ error: 'Anthropic API key not configured' });
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(500).json({ error: 'Groq API key not configured' });
     }
 
     const variations = await generateTitleVariations(title);

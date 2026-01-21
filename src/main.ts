@@ -1,10 +1,19 @@
-const API_BASE = 'http://localhost:3001';
+const API_BASE = import.meta.env.DEV ? 'http://localhost:3001' : '';
 
 interface VideoInfo {
   title: string;
   thumbnail: string;
   duration: string;
   channelTitle: string;
+  viewCount: string;
+  likeCount: string;
+}
+
+function formatNumber(num: string): string {
+  const n = parseInt(num);
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
 }
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
@@ -66,7 +75,11 @@ function showVideoInfo(info: VideoInfo): void {
       <div class="video-details">
         <h2 class="video-title">${info.title}</h2>
         <p class="video-channel">${info.channelTitle}</p>
-        <span class="video-duration">${info.duration}</span>
+        <div class="video-stats">
+          <span class="video-duration">${info.duration}</span>
+          <span class="video-views">${formatNumber(info.viewCount)} views</span>
+          <span class="video-likes">${formatNumber(info.likeCount)} likes</span>
+        </div>
       </div>
       <button class="generate-btn" id="generate-btn">Generate Title Variations</button>
     </div>
